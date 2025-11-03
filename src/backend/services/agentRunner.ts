@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 import * as readline from "node:readline";
-import type { TurnItem } from "@codex-webapp/shared";
+import type { TurnItem } from "../../shared/index.js";
 import { streamChunkToMainApp, postMessageToMainApp } from "./mainAppClient.js";
 
 const WORKSPACE_PATH = process.env.WORKSPACE_PATH || "/workspace";

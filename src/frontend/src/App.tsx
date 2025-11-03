@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import type { Message } from "@codex-webapp/shared";
+import type { Message } from "@shared";
 import { useMainAppBridge } from "./hooks/useMainAppBridge";
 import { useWebSocket } from "./hooks/useWebSocket";
 import ReactMarkdown from "react-markdown";

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { StreamChunk } from "@codex-webapp/shared";
+import type { StreamChunk } from "@shared";
 
 type WebSocketHookResult = {
   connected: boolean;

@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from "react";
-import type { MainToContainerMessage, ContainerToMainMessage } from "@codex-webapp/shared";
+import type { MainToContainerMessage, ContainerToMainMessage } from "@shared";
 
 type MessageHandler = (message: MainToContainerMessage) => void;
 

@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import { WebSocket } from "ws";
-import type { Message, WebhookMessagePayload, StreamChunk } from "@codex-webapp/shared";
+import type { Message, WebhookMessagePayload, StreamChunk } from "../../shared/index.js";
 
 const SESSION_ID = process.env.SESSION_ID || "";
 const SESSION_TOKEN = process.env.SESSION_TOKEN || "";

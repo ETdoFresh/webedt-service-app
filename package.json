@@ -1,5 +1,5 @@
 {
-  "name": "@codex-webapp/container-app",
+  "name": "webedt-service-app",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -15,7 +15,6 @@
     "start": "cross-env NODE_ENV=production node dist/server/index.js"
   },
   "dependencies": {
-    "@codex-webapp/shared": "*",
     "@anthropic-ai/claude-agent-sdk": "^0.1.28",
     "@openai/codex-sdk": "^0.46.0",
     "dotenv": "^17.2.3",
