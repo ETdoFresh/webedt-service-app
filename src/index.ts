@@ -6,7 +6,7 @@ import { createServer as createHttpServer } from "node:http";
 import express from "express";
 import { initializeMainAppClient, shutdownMainAppClient } from "./backend/services/mainAppClient.js";
 
-const DEFAULT_PORT = 3001;
+const DEFAULT_PORT = 3000;
 const isProduction = process.env.NODE_ENV === "production";
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 // In production, we run from dist/server, so go up 2 levels to get to app root
