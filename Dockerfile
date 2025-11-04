@@ -30,12 +30,8 @@ RUN mkdir -p /workspace
 # Make init script executable
 RUN chmod +x /editor/scripts/container-init.sh
 
-# Expose port for container app
-EXPOSE 3001
-
 # Set environment
 ENV NODE_ENV=production
-ENV PORT=3001
 ENV WORKSPACE_PATH=/workspace
 
 # Start with init script (clones repo) then start app
