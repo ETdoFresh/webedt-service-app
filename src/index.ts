@@ -30,7 +30,15 @@ async function registerFrontendMiddleware(app: express.Application): Promise<any
 
       try {
         const indexPath = path.resolve(clientDistPath, "index.html");
-        const html = await fs.readFile(indexPath, "utf-8");
+        let html = await fs.readFile(indexPath, "utf-8");
+
+        // Inject <base> tag with SESSION_ID path so relative asset paths work without trailing slash
+        const sessionId = process.env.SESSION_ID;
+        if (sessionId) {
+          const baseTag = `<base href="/${sessionId}/">`;
+          html = html.replace('<head>', `<head>\n    ${baseTag}`);
+        }
+
         res.status(200).set({ "Content-Type": "text/html" }).end(html);
       } catch (error) {
         next(error);
