@@ -43,7 +43,15 @@ async function registerFrontendMiddleware(app: express.Application): Promise<any
       if (!basePath || req.originalUrl.startsWith(basePath)) {
         try {
           const indexPath = path.resolve(clientDistPath, "index.html");
-          const html = await fs.readFile(indexPath, "utf-8");
+          let html = await fs.readFile(indexPath, "utf-8");
+
+          // Inject <base> tag to fix asset paths when serving from a subpath
+          if (basePath) {
+            // Add trailing slash to base path for proper resolution
+            const baseTag = `<base href="${basePath}/">`;
+            html = html.replace('<head>', `<head>\n    ${baseTag}`);
+          }
+
           res.status(200).set({ "Content-Type": "text/html" }).end(html);
         } catch (error) {
           next(error);
