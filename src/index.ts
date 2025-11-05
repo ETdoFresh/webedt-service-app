@@ -19,19 +19,8 @@ const indexHtmlPath = path.resolve(frontendRoot, "index.html");
 async function registerFrontendMiddleware(app: express.Application): Promise<any> {
   if (isProduction) {
     // Serve static files in production
-    // Determine base path from SESSION_ID environment variable
-    const sessionId = process.env.SESSION_ID;
-    const basePath = sessionId ? `/${sessionId}` : '';
-
     console.log(`[container-app] serving static frontend from ${clientDistPath}`);
-    console.log(`[container-app] base path: ${basePath || '/'}`);
-
-    // Serve static files at the base path
-    if (basePath) {
-      app.use(basePath, express.static(clientDistPath));
-    } else {
-      app.use(express.static(clientDistPath));
-    }
+    app.use(express.static(clientDistPath));
 
     app.use("*", async (req, res, next) => {
       if (req.originalUrl?.startsWith("/api") || req.originalUrl?.startsWith("/health")) {
@@ -39,25 +28,12 @@ async function registerFrontendMiddleware(app: express.Application): Promise<any
         return;
       }
 
-      // Only serve HTML if the request is for the base path or under it
-      if (!basePath || req.originalUrl.startsWith(basePath)) {
-        try {
-          const indexPath = path.resolve(clientDistPath, "index.html");
-          let html = await fs.readFile(indexPath, "utf-8");
-
-          // Inject <base> tag to fix asset paths when serving from a subpath
-          if (basePath) {
-            // Add trailing slash to base path for proper resolution
-            const baseTag = `<base href="${basePath}/">`;
-            html = html.replace('<head>', `<head>\n    ${baseTag}`);
-          }
-
-          res.status(200).set({ "Content-Type": "text/html" }).end(html);
-        } catch (error) {
-          next(error);
-        }
-      } else {
-        next();
+      try {
+        const indexPath = path.resolve(clientDistPath, "index.html");
+        const html = await fs.readFile(indexPath, "utf-8");
+        res.status(200).set({ "Content-Type": "text/html" }).end(html);
+      } catch (error) {
+        next(error);
       }
     });
 
