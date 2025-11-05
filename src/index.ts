@@ -18,9 +18,9 @@ const indexHtmlPath = path.resolve(frontendRoot, "index.html");
 
 async function registerFrontendMiddleware(app: express.Application): Promise<any> {
   if (isProduction) {
-    // Serve static files in production
-    console.log(`[container-app] serving static frontend from ${clientDistPath}`);
-    app.use(express.static(clientDistPath));
+    // Serve static assets (but not index.html - we handle that separately for base tag injection)
+    console.log(`[container-app] serving static assets from ${clientDistPath}`);
+    app.use(express.static(clientDistPath, { index: false }));
 
     app.use("*", async (req, res, next) => {
       if (req.originalUrl?.startsWith("/api") || req.originalUrl?.startsWith("/health")) {
