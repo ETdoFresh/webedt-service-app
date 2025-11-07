@@ -51,17 +51,45 @@ chmod 600 ~/.config/droid_* 2>/dev/null || true
 
 # Clone GitHub repository into /workspace if GITHUB_REPO_URL is provided
 if [ -n "$GITHUB_REPO_URL" ]; then
-    echo "[Container Init] Cloning GitHub repository: $GITHUB_REPO_URL"
+    echo "[Container Init] Checking workspace for $GITHUB_REPO_URL"
 
     # Check if workspace is empty
     if [ -z "$(ls -A /workspace)" ]; then
+        echo "[Container Init] Workspace is empty, cloning repository..."
         git clone "$GITHUB_REPO_URL" /workspace
+
+        # Checkout specific branch if provided
+        if [ -n "$GITHUB_BRANCH" ]; then
+            cd /workspace
+            git checkout "$GITHUB_BRANCH"
+            echo "[Container Init] Checked out branch: $GITHUB_BRANCH"
+        fi
+
         echo "[Container Init] Repository cloned successfully"
     else
-        echo "[Container Init] Workspace is not empty, skipping clone"
+        echo "[Container Init] Workspace has content, checking if it's the right repo..."
+        cd /workspace
+
+        if [ -d ".git" ]; then
+            current_url=$(git remote get-url origin 2>/dev/null || echo "")
+
+            if [ "$current_url" != "$GITHUB_REPO_URL" ]; then
+                echo "[Container Init] WARNING: Workspace contains different repository!"
+                echo "[Container Init] Current: $current_url"
+                echo "[Container Init] Expected: $GITHUB_REPO_URL"
+                echo "[Container Init] Skipping clone to preserve data"
+            else
+                echo "[Container Init] Correct repository found, pulling latest changes..."
+                git pull || echo "[Container Init] WARNING: Failed to pull, continuing anyway"
+                echo "[Container Init] Workspace updated"
+            fi
+        else
+            echo "[Container Init] Workspace has files but no .git directory"
+            echo "[Container Init] Preserving existing files"
+        fi
     fi
 else
-    echo "[Container Init] No GITHUB_REPO_URL provided, skipping repository clone"
+    echo "[Container Init] No GITHUB_REPO_URL provided, workspace as-is"
 fi
 
 echo "[Container Init] Initialization complete"

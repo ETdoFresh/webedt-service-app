@@ -1,0 +1,25 @@
+# Minimal Dockerfile for volume-based deployment
+# This Dockerfile does NOT build the app - it just sets up the environment.
+# The pre-built app code is mounted from the editor volume at /app
+
+FROM node:20-slim
+
+# Install system dependencies needed for workspace operations
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Working directory is /app (will be mounted from editor volume)
+WORKDIR /app
+
+# Create workspace directory (will be mounted from session volume)
+RUN mkdir -p /workspace
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV WORKSPACE_PATH=/workspace
+
+# Run init script then start pre-built server
+# The init script and server code come from the mounted /app volume
+CMD ["/bin/bash", "-c", "/app/scripts/container-init.sh && node /app/dist/server/index.js"]
